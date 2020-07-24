@@ -13,13 +13,6 @@ const meeting = s => {
 			'(' + sorted[i].split(':')[0] + ', ' + sorted[i].split(':')[1] + ')'
     }
 
-
-    const array = [... new Array(10)]
-    const newArr = array.reduce((acc, curr, i, array) => {
-        acc.push(curr)
-        return acc
-    }, 0)
-
 	return sorted.join('')    
 }
 
