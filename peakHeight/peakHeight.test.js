@@ -10,7 +10,7 @@ const peakHeight = (mountain) => {
             case arr.includes(null):
                 val = 1;
             default:
-                val = null
+                val = 1
         }
 
         return val
@@ -20,17 +20,25 @@ const peakHeight = (mountain) => {
         // pass surroundings to checkSurroundings
         for (let x = 0; x < mountain[y].length; x++) {
             // pass up, down, left, right
-            if (mountain[y][x] === p) {    
-                console.log(mountain[y - 1][x])
-                console.log(mountain[y + 1][x]) 
-                console.log(mountain[y][x - 1]) 
-                console.log(mountain[y][x + 1])
+            if (mountain[y][x] === p) {
+              let up
+              let down
+                let left
+            let right
+            let num
+            
+              try {
+                up = mountain[y - 1][x] ? mountain[y - 1][x] : null 
+                down = mountain[y + 1][x] ? mountain[y + 1][x] : null 
+                left = mountain[y][x - 1] ? mountain[y - 1][x - 1] : null 
+                right = mountain[y][x + 1] ? mountain[y][x + 1] : null 
+              } catch(err) {
+                num = 1
+              }
+                if (!num) {
+                    num = checkSurroundings(up, down, left, right)
+                }
                 
-                // const up = mountain[y - 1][x] ? mountain[y - 1][x] : null 
-                // const down = mountain[y + 1][x] ? mountain[y + 1][x] : null 
-                // const left = mountain[y][x - 1] ? mountain[y - 1][x - 1] : null 
-                // const right = mountain[y][x + 1] ? mountain[y][x + 1] : null 
-                const num = checkSurrounding(up, down, left, right)
                 birdsView.push(num)
             } else {
                 birdsView.push(' ')
