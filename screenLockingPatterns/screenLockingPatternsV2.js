@@ -1,9 +1,13 @@
 // https://www.codewars.com/kata/585894545a8a07255e0002f1
 
-const firstPoint = 'E'; // answer = 37 
-const patternLength = 4;
+const firstPoint = 'D'; // answer = 37 
+const patternLength = 3;
 
 function countPatternsFrom(firstPoint, patternLength) {
+    if (patternLength === 0 || patternLength === 1) {
+        return patternLength;
+    }
+
     const grid = [
         ['A', 'B', 'C'],
         ['D', 'E', 'F'],
@@ -30,8 +34,10 @@ function countPatternsFrom(firstPoint, patternLength) {
     const coordinates = {};
     const moves = {};
     var proposedCoordinate;
-    var paths = [firstPoint];
-    var possibleNextPoints;
+    var patterns = [firstPoint];
+    var currentPoint;
+    var nextPoints;
+    var nextPatterns;
     
     // set coordinates of points
     for (let y = 0; y < grid.length; y++) {
@@ -44,7 +50,6 @@ function countPatternsFrom(firstPoint, patternLength) {
     // determine possible moves at each point
     for (let [point, movesObj] of Object.entries(moves)) {
         for (let [direction, vector] of Object.entries(directions)) {
-            movesObj[direction] = [];
             proposedCoordinate = coordinates[point];
             for (let i = 0; i < 2; i++) {
                 proposedCoordinate =  vectorAdd(proposedCoordinate, vector);
@@ -52,6 +57,9 @@ function countPatternsFrom(firstPoint, patternLength) {
                     proposedCoordinate[0] <= 2 &&
                     proposedCoordinate[1] >= 0 &&
                     proposedCoordinate[1] <= 2) {
+                        if (!movesObj[direction]) {
+                            movesObj[direction] = [];
+                        }
                         movesObj[direction].push(getObjectKeyByArrayValue(coordinates, proposedCoordinate));
                 }
             }
@@ -60,29 +68,26 @@ function countPatternsFrom(firstPoint, patternLength) {
 
     // determine possible patterns
     for (var i = 0; i < patternLength - 1; i++) {
-        paths.map((pathVal, pathIdx, pathArr) => {
-            possibleNextPoints = [].concat(Object.values(moves[pathVal.substr(pathVal.length - 1)]).filter((val) => val.length > 0));
-                
-            possibleNextPoints.filter(function(pointsVal, pointsIdx, pointsArr) {
-                if (this.pathVal.includes(pointsVal[0])) {
-                    pointsArr[pointsIdx].shift();
-                }
-                
-                if (pointsArr[pointsIdx].length > 0) {
-                    pointsArr[pointsIdx] = this.pathVal + pointsVal[0];
-                    return true;                    
-
-                }
-            }, {pathVal: pathVal});
-
-            pathArr[pathIdx] = possibleNextPoints;
+        patterns.map((patternsVal, patternsIdx, patternsArr) => {
+            if (patternsVal) {
+                currentPoint = patternsVal.substr(patternsVal.length - 1);
+                nextPoints = Object.values(moves[currentPoint]);
+                nextPatterns = nextPoints.map((pointsVal) => {
+                    if (!patternsVal.includes(pointsVal[0])) {
+                            return patternsVal + pointsVal[0];
+                    } else {
+                        if (pointsVal.length > 1 && !patternsVal.includes(pointsVal[1])) {
+                            return patternsVal + pointsVal[1];
+                        }
+                    }
+                })
+                patternsArr[patternsIdx] = nextPatterns;
+            }
         });
-        paths = [].concat(...paths).filter((val) => val.length > 0);
+        patterns = [].concat(...patterns);
     }
 
-    console.log(moves)
-
-    return paths.length;
+    return patterns.filter((val) => val).length;
 }
 
 function vectorAdd(arrA, arrB) {
@@ -94,17 +99,4 @@ function getObjectKeyByArrayValue(object, value) {
 }
 
 countPatternsFrom(firstPoint, patternLength);
-
-
-/*
-[
-    [[0, 0], [0, 1], [0, 2]],
-    [[1, 0], [1, 1], [1, 2]],
-    [[2, 0], [2, 1], [2, 2]],
-]
-*/
-
-// horizontal
-// vertical
-// diagonal
-// diagonal (L variant)
+// console.log(countPatternsFrom(firstPoint, patternLength));
