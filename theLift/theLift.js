@@ -12,11 +12,12 @@ const queues = [
 const capacity = 5; // answer is [0, 1, 2, 3, 4, 5, 0]
 
 function theLift(queues, capacity) {
-    const log = [];
     const lift = {
+        direction: 'up',
         floor: 0,
+        log: [],
         persons: [],
-        direction: 'none',
+        queuedFloors: []
     };
     const floors = queues.map((queue, floor) => {
         const persons = queue.map(function(targetFloor) {
@@ -26,11 +27,22 @@ function theLift(queues, capacity) {
             persons: persons,
             liftCallButtons: getUniqueFloorLiftCallButtons(persons)
         }
-    })        
+    });
+
+    if (floors[lift.floor].persons.length > 0) {
+    
+    }
+
+
+
+    // loop
+        // if floor not empty: allow people going same direction in (if capacity is not max)
+        // get next floor in queudFloors (if no more going in same direction, scan floors to see lowest person going up or highest person going down)
+        // move to next floor
 
     console.log(floors);
 
-    return log;
+    return lift.log;
 }
 
 function getUniqueFloorLiftCallButtons(persons) {
