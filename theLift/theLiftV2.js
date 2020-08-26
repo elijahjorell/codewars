@@ -3,7 +3,7 @@
 const queues = [
     [], // G
     [], // 1
-    [1,1], // 2
+    [1, 1], // 2
     [], // 3
     [], // 4
     [], // 5
@@ -26,6 +26,7 @@ function theLift(queues, maxCapacity) {
         console.log('-------- ITERATION ' + (i + 1) + ' --------');
         console.log(lift);
         console.log(floors);
+        // console.log(lift.getFloorsWithSameDirectionButtonPressed(floors))
         
         if (!lift.queuedFloors.length) break;
         
@@ -55,13 +56,22 @@ class Lift {
         this.persons = [];
         this.queuedFloors = [];
     }
-    getFloorsWithSameDirectionButtonPressed(floors) {
+    changeDirection() {
+        this.direction = this.direction === 'up' ? 'down' : 'up';
+    }
+    getFloorsWithSameDirectionButtonPressed(floors) { // change to floors with buttons pressed that are above or below lift floor
         return floors.reduce((arr, floor, idx) => {
             if (floor.liftCallButtons.includes(this.direction)) {
-                arr.push(idx);
+                // if ((this.direction === 'up' && floor.level > this.floor) ||
+                //     (this.direction === 'down' && floor.level < this.floor)) {
+                    arr.push(idx);
+                // }
             };
             return arr;
         }, []);
+    }
+    getTargetFloorsOfLoadedPersons() {
+        return [... new Set(this.persons.map((person) => person.targetFloor))];
     }
     load(floor) {
         floor.persons = floor.persons.reduce((newFloorPersons, floorPerson) => {
@@ -94,16 +104,16 @@ class Lift {
         }, []);
     }
     updateQueuedFloors(floors) {
-        const targetFloorsOfPersonsInLift = [... new Set(this.persons.map((person) => person.targetFloor))];
-        var floorsButtonPressedSameDirection = this.getFloorsWithSameDirectionButtonPressed(floors);
-    
-        if (!floorsButtonPressedSameDirection.length) {
-            this.direction = this.direction === 'up' ? 'down' : 'up';
-            floorsButtonPressedSameDirection = this.getFloorsWithSameDirectionButtonPressed(floors);
-
+        var targetFloorsOfLoadedPersons = this.getTargetFloorsOfLoadedPersons();
+        var floorsWithButtonPressedSameDirection = this.getFloorsWithSameDirectionButtonPressed(floors);
+        
+        if (!floorsWithButtonPressedSameDirection.length) {
+            this.changeDirection();
+            floorsWithButtonPressedSameDirection = this.getFloorsWithSameDirectionButtonPressed(floors);
+            console.log(floorsWithButtonPressedSameDirection)
         }
 
-        this.queuedFloors = [... new Set(floorsButtonPressedSameDirection.concat(targetFloorsOfPersonsInLift))];
+        this.queuedFloors = [... new Set(floorsWithButtonPressedSameDirection.concat(targetFloorsOfLoadedPersons))];
 
         if (this.direction === 'up') {
             this.queuedFloors = this.queuedFloors.sort((a, b) => a - b);
