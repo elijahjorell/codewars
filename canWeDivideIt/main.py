@@ -1,3 +1,5 @@
+# https://www.codewars.com/kata/5a2b703dc5e2845c0900005a
+
 number = -12
 a = 2
 b = -6
